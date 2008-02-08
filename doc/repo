@@ -1,0 +1,8 @@
+repo.or.cz
+
+Homepage: http://repo.or.cz/w/decorate.git
+Username: lang
+Owner: langstefan@gmx.at
+Mirror URL: git://repo.or.cz/decorate.git
+            http://repo.or.cz/r/decorate.git
+Push URL: git+ssh://repo.or.cz/srv/git/decorate.git
