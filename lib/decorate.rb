@@ -17,8 +17,10 @@ module Decorate
     (Thread.current[:_decorator_stack_] ||= []).push(decorator)
   end
 
-  def self.pop_decorator
-    (Thread.current[:_decorator_stack_] ||= []).pop
+  def self.clear_decorators
+    stack = (Thread.current[:_decorator_stack_] ||= []).dup
+    Thread.current[:_decorator_stack_].clear
+    stack
   end
 
   def self.decorate(decorator = nil, &block)
@@ -32,9 +34,7 @@ module Decorate
   end
 
   def self.process_decorators(klass, method_name)
-    loop {
-      decorator = Decorate.pop_decorator
-      break if decorator.nil?
+    Decorate.clear_decorators.reverse!.each { |decorator|
       decorator.decorate(klass, method_name)
     }
   end
