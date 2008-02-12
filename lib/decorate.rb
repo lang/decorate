@@ -31,6 +31,14 @@ module Decorate
     push_decorator(decorator)
   end
 
+  def self.process_decorators(klass, method_name)
+    loop {
+      decorator = Decorate.pop_decorator
+      break if decorator.nil?
+      decorator.decorate(klass, method_name)
+    }
+  end
+
 end
 
 class Module
@@ -40,13 +48,24 @@ class Module
   alias _method_added_without_decorate method_added
 
   def method_added(method_name)
-    puts "method_added: #{self.inspect}[#{object_id}] #{method_name}"
+    #puts "method_added: #{self.inspect}[#{object_id}] #{method_name}"
     _method_added_without_decorate(method_name)
-    loop {
-      decorator = Decorate.pop_decorator
-      break if decorator.nil?
-      decorator.decorate(self, method_name)
-    }
+    Decorate.process_decorators(self, method_name)
+  end
+
+end
+
+class Object
+
+  private
+
+  alias _singleton_method_added_without_decorate singleton_method_added
+
+  def singleton_method_added(method_name)
+    _singleton_method_added_without_decorate(method_name)
+    klass = class << self; self; end
+    #puts "singleton_method_added: #{klass.inspect}[#{klass.object_id}] #{method_name}"
+    Decorate.process_decorators(klass, method_name)
   end
 
 end
