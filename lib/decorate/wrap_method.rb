@@ -2,6 +2,9 @@ require "decorate"
 
 module Decorate
 
+  # NOTE: This class will probably be removed and only
+  # the wrapped_method_name logic will be preserved.
+
   class WrapMethod
 
     # A name for the decorator that is used for name mangling
