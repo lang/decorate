@@ -40,7 +40,7 @@ class Module
   alias _method_added_without_decorate method_added
 
   def method_added(method_name)
-    #puts "method_added: #{self.inspect} #{method_name}"
+    puts "method_added: #{self.inspect}[#{object_id}] #{method_name}"
     _method_added_without_decorate(method_name)
     loop {
       decorator = Decorate.pop_decorator

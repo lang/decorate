@@ -51,7 +51,10 @@ class M1
     end
   end
 
+  puts "defining class method m1"
+
   # doesn't work (yet)
+  # Must hook into Object#singleton_method_added to make it work!
   memoize
   def self.m1(a, b)
     puts "#{self}.m1(#{a}, #{b})"
