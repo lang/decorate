@@ -67,3 +67,21 @@ class M1
   end
 
 end
+
+extend Memoize
+
+memoize
+def mx(a, b)
+  puts "#{self}.m1(#{a}, #{b})"
+  case [a,b]
+  when [1,2]; 1
+  when [2,3]; 2
+  when [4,5]; 3
+  else -1
+  end
+end
+
+private_method
+def private_toplevel_method
+  puts "private_toplevel_method called"
+end
