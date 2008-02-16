@@ -16,12 +16,12 @@ class Foo
 
 end
 
+require "decorate/create_alias"
 module Memoize
   
   def memoize
     Decorate.decorate { |klass, method_name|
-      wrapped_method_name = :"#{method_name}_without_memoize"
-      klass.send :alias_method, wrapped_method_name, method_name
+      wrapped_method_name = Decorate.create_alias(klass, method_name, :memoize)
       # TODO: should use weak hash tables
       cache = Hash.new { |hash, key| hash[key] = {} }
       klass.send(:define_method, method_name) { |*args|
