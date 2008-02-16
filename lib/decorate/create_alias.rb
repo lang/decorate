@@ -20,7 +20,7 @@ module Decorate
       new_name = "#{basename}_#{i}"
     }
 
-    klass.alias_method(new_name, method_name)
+    klass.send(:alias_method, new_name, method_name)
     klass.send(:private, new_name)
     new_name
   end
