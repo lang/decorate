@@ -1,0 +1,9 @@
+README.txt
+History.txt
+Manifest.txt
+Rakefile
+test.rb
+doc/repo
+lib/decorate.rb
+lib/decorate/private_method.rb
+lib/decorate/create_alias.rb

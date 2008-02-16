@@ -1,5 +1,7 @@
 module Decorate
 
+  VERSION = "0.2.0"
+
   class BlockDecorator
 
     def initialize(block)
