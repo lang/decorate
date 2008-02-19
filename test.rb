@@ -1,6 +1,7 @@
 $:.unshift "lib"
 
 require "decorate/private_method"
+require "decorate/memoize"
 
 class Foo
 
@@ -16,29 +17,8 @@ class Foo
 
 end
 
-require "decorate/create_alias"
-module Memoize
-  
-  def memoize
-    Decorate.decorate { |klass, method_name|
-      wrapped_method_name = Decorate.create_alias(klass, method_name, :memoize)
-      # TODO: should use weak hash tables
-      cache = Hash.new { |hash, key| hash[key] = {} }
-      klass.send(:define_method, method_name) { |*args|
-        icache = cache[self]
-        if icache.has_key?(args)
-          icache[args]
-        else
-          icache[args] = send(wrapped_method_name, *args)
-        end
-      }
-    }
-  end
-
-end
-
 class M1
-  extend Memoize
+  extend Decorate::Memoize
 
   memoize
   def m1(a, b)
@@ -68,10 +48,21 @@ class M1
 
 end
 
-extend Memoize
+extend Decorate::Memoize
 
 memoize
 def mx(a, b)
+  puts "#{self}.m1(#{a}, #{b})"
+  case [a,b]
+  when [1,2]; 1
+  when [2,3]; 2
+  when [4,5]; 3
+  else -1
+  end
+end
+
+Decorate::Memoize.memoize
+def my(a, b)
   puts "#{self}.m1(#{a}, #{b})"
   case [a,b]
   when [1,2]; 1
