@@ -5,5 +5,9 @@ Rakefile
 test.rb
 doc/repo
 lib/decorate.rb
-lib/decorate/private_method.rb
 lib/decorate/create_alias.rb
+lib/decorate/private_method.rb
+lib/decorate/protected_method.rb
+lib/decorate/public_method.rb
+lib/decorate/module_method.rb
+lib/decorate/memoize.rb
