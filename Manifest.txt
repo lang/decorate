@@ -3,7 +3,7 @@ History.txt
 Manifest.txt
 Rakefile
 test.rb
-doc/repo
+docsrc/repo
 lib/decorate.rb
 lib/decorate/create_alias.rb
 lib/decorate/private_method.rb
@@ -11,3 +11,4 @@ lib/decorate/protected_method.rb
 lib/decorate/public_method.rb
 lib/decorate/module_method.rb
 lib/decorate/memoize.rb
+lib/decorate/before_decorator.rb

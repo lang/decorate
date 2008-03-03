@@ -76,3 +76,24 @@ private_method
 def private_toplevel_method
   puts "private_toplevel_method called"
 end
+
+require "decorate/before_decorator"
+class Bf
+  extend Decorate::BeforeDecorator
+
+  before_decorator :trace_call, :call => :trace_call
+
+  def trace_call(method_name, *args, &block)
+    puts "Before #{self}.#{method_name}, args: #{args.inspect}, block: #{block.inspect}"
+  end
+
+  def foo
+    puts "foo"
+  end
+
+  trace_call
+  def bar
+    puts "bar"
+  end
+
+end
