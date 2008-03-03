@@ -97,3 +97,24 @@ class Bf
   end
 
 end
+
+require "decorate/around_decorator"
+class Ad
+  extend Decorate::AroundDecorator
+
+  around_decorator :wrap, :call => :wrap
+
+  def wrap(call)
+    puts "Before #{call.inspect}"
+    call.transfer
+    puts "After #{call.inspect}"
+    call.result + 1
+  end
+
+  wrap
+  def foo(*args, &block)
+    puts "foo: #{args.inspect}, block: #{block.inspect}"
+    rand 10
+  end
+
+end

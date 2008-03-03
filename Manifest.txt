@@ -12,3 +12,4 @@ lib/decorate/public_method.rb
 lib/decorate/module_method.rb
 lib/decorate/memoize.rb
 lib/decorate/before_decorator.rb
+lib/decorate/around_decorator.rb
