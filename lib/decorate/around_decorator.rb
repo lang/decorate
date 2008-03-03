@@ -46,6 +46,37 @@ module Decorate::AroundDecorator
 
   end
   
+  # Example:
+  #   
+  #   require "decorate/around_decorator"
+  #
+  #   class Ad
+  #     extend Decorate::AroundDecorator
+  #   
+  #     around_decorator :wrap, :call => :wrap
+  #   
+  #     def wrap(call)
+  #       puts "Before #{call.inspect}"
+  #       call.transfer
+  #       puts "After #{call.inspect}"
+  #       call.result + 1
+  #     end
+  #   
+  #     wrap
+  #     def foo(*args, &block)
+  #       puts "foo: #{args.inspect}, block: #{block.inspect}"
+  #       rand 10
+  #     end
+  #   
+  #   end
+  #
+  #   >> o = Ad.new
+  #   => <Ad:0xb7bd1e80>
+  #   >> o.foo
+  #   Before #<Decorate::AroundDecorator::AroundCall:0xb7bd0828 @message=:foo, @result=nil, @receiver=#<Ad:0xb7bd1e80>, @args=[], @block=nil, @wrapped_message=:foo_without_wrap>
+  #   foo: [], block: nil
+  #   After #<Decorate::AroundDecorator::AroundCall:0xb7bd0828 @message=:foo, @result=5, @receiver=#<Ad:0xb7bd1e80>, @args=[], @block=nil, @wrapped_message=:foo_without_wrap>
+  #   => 6
   def around_decorator(decorator_name, opts) #:doc:
     around_method_name = opts[:call]
     unless around_method_name.kind_of?(Symbol)
