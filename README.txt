@@ -20,6 +20,10 @@ Decorators that come with the decorate library:
 * Decorate::PublicMethod
 * Decorate::ModuleMethod
 * Decorate::Memoize
+
+Helpers to create your own decorators:
+
+* Decorate::AroundDecorator
 * Decorate::BeforeDecorator
 
 == Hygiene issues
