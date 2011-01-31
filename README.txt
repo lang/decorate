@@ -1,12 +1,6 @@
 = decorate
 
-Homepage:: http://decorate.rubyforge.org/
-Project page:: http://rubyforge.org/projects/decorate/
-Git repository:: http://repo.or.cz/w/decorate.git
-
-Decorate is written by Stefan Lang, you can contact me directly
-(langstefan at gmx dot at), or post on ruby-talk and include
-"decorate" in the subject line.
+Homepage:: http://github.com/lang/decorate
 
 == Description
 
