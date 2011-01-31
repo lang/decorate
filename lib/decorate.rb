@@ -1,6 +1,6 @@
 module Decorate
 
-  VERSION = "0.2.0"
+  VERSION = "0.3.0"
 
   # A BlockDecorator instance wraps an object (+block+) and delegates
   # calls to +decorate+ to the wrapped objects +call+ method.
