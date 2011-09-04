@@ -20,11 +20,10 @@ describe Decorate do
   end
 
   let(:decorated_class) do
-    example_decorator = self.example_decorator
-    before_callback, after_callback = self.before_callback, self.after_callback
+    decorator, before_cb, after_cb = self.example_decorator, self.before_callback, self.after_callback
     Class.new do
-      extend example_decorator
-      around_filter(before_callback, after_callback)
+      extend decorator
+      around_filter(before_cb, after_cb)
       def self.decorated_method(*args,&block)
         args.each {|x| x.call }
         yield if block_given?
@@ -33,11 +32,10 @@ describe Decorate do
   end
 
   let(:decorated_object) do
-    example_decorator = self.example_decorator
-    before_callback, after_callback = self.before_callback, self.after_callback
+    decorator, before_cb, after_cb = self.example_decorator, self.before_callback, self.after_callback
     Class.new do
-      extend example_decorator
-      around_filter(before_callback, after_callback)
+      extend decorator
+      around_filter(before_cb, after_cb)
       def decorated_method(*args,&block)
         args.each {|x| x.call }
         yield if block_given?
