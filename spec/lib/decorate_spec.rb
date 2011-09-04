@@ -25,26 +25,50 @@ describe Decorate do
     Class.new do
       extend example_decorator
       around_filter(before_callback, after_callback)
-      def decorated_method(*args,&block)
+      def self.decorated_method(*args,&block)
         args.each {|x| x.call }
         yield if block_given?
       end
     end
   end
 
-  let(:decorated_object) { decorated_class.new }
-
-  it "should wrap the orignal method" do
-    before_callback.should_receive(:call)
-    after_callback.should_receive(:call)
-    decorated_object.decorated_method
+  let(:decorated_object) do
+    example_decorator = self.example_decorator
+    before_callback, after_callback = self.before_callback, self.after_callback
+    Class.new do
+      extend example_decorator
+      around_filter(before_callback, after_callback)
+      def decorated_method(*args,&block)
+        args.each {|x| x.call }
+        yield if block_given?
+      end
+    end.new
   end
 
-  it "should provide args given to the method" do
-    callback_one, callback_two, callback_block = [mock]*3
-    callback_one.should_receive(:call)
-    callback_two.should_receive(:call)
-    callback_block.should_receive(:call)
-    decorated_object.decorated_method(callback_one, callback_two) { callback_block.call }
+  shared_examples_for "with decorated method" do
+    it "should wrap the orignal method" do
+      before_callback.should_receive(:call)
+      after_callback.should_receive(:call)
+      subject.decorated_method
+    end
+
+    it "should provide args given to the method" do
+      callback_one, callback_two, callback_block = [mock]*3
+      callback_one.should_receive(:call)
+      callback_two.should_receive(:call)
+      callback_block.should_receive(:call)
+      subject.decorated_method(callback_one, callback_two) { callback_block.call }
+    end
   end
+
+  context("instance method") do
+    subject{ decorated_object }
+    it_should_behave_like "with decorated method"
+  end
+
+  context("class method") do
+    subject{ decorated_class }
+    it_should_behave_like "with decorated method"
+  end
+
 end
