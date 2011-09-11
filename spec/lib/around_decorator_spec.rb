@@ -50,45 +50,30 @@ describe Decorate, "around decorator" do
   end
 
   describe "call object" do
+    let(:args) { [:a, :b].map{|x| mock(x, :call => nil) } }
 
-    it "should be passed to the decorator on call" do
-      before_callback.should_receive(:call).with { |call| call.should be_a Decorate::AroundCall }
-      subject.decorated_method
+    let(:block) { lambda {} }
+
+    subject do
+      call_object = nil
+      after_callback.stub(:call).with {|co| call_object = co }
+      decorated_object.decorated_method(*args,&block)
+      call_object
     end
 
-    it "should contain receiver for the original call" do
-      before_callback.should_receive(:call).with { |call| call.receiver.should == subject }
-      subject.decorated_method
-    end
+    it { should be_a Decorate::AroundCall }
 
-    it "should contain args for the original call" do
-      args = [:a, :b].map{|x| mock(x, :call => nil) }
-      before_callback.should_receive(:call).with { |call| call.args.should == args }
-      subject.decorated_method(*args)
-    end
+    specify { subject.receiver.should == decorated_object }
 
-    it "should contain block for the original call" do
-      block = lambda {}
-      before_callback.should_receive(:call).with { |call| call.block.should == block }
-      subject.decorated_method(&block)
-    end
+    specify { subject.args.should == args }
 
-    it "should contain original name of the method" do
-      before_callback.should_receive(:call).with { |call| call.message.should == :decorated_method }
-      subject.decorated_method
-    end
+    specify { subject.block.should == block }
 
-    it "should contain result of the call" do
-      after_callback.should_receive(:call).with { |call| call.result.should == "String" }
-      subject.decorated_method
-    end
+    specify { subject.message.should == :decorated_method }
 
-    it "should contain alias name of the original method" do
-      before_callback.should_receive(:call).with do |call|
-        call.wrapped_message.should == :decorated_method_without_around_decorator
-      end
-      subject.decorated_method
-    end
+    specify { subject.result.should == "String" }
+
+    specify { subject.wrapped_message.should == :decorated_method_without_around_decorator }
 
   end
 
