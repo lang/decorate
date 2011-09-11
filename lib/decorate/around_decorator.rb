@@ -73,9 +73,9 @@ module Decorate
   #   foo: [], block: nil
   #   After #<Decorate::AroundDecorator::AroundCall:0xb7bd0828 @message=:foo, @result=5, @receiver=#<Ad:0xb7bd1e80>, @args=[], @block=nil, @wrapped_message=:foo_without_wrap>
   #   => 6
-  def self.around_decorator(&decorator_block) #:doc:
+  def self.around_decorator(decorator_name = nil, &decorator_block) #:doc:
     Decorate.decorate do |klass, method_name|
-      decorator_name = :around_decorator
+      decorator_name ||= eval("__method__", decorator_block.binding)
       wrapped_method_name = Decorate.create_alias(klass, method_name, decorator_name)
       klass.send(:define_method, method_name) do |*args, &block|
         call = Decorate::AroundCall.new(self, method_name.to_sym, wrapped_method_name.to_sym, args, block)

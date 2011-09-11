@@ -73,7 +73,7 @@ describe Decorate, "around decorator" do
 
     specify { subject.result.should == "String" }
 
-    specify { subject.wrapped_message.should == :decorated_method_without_around_decorator }
+    specify { subject.wrapped_message.should == :decorated_method_without_around_filter }
 
   end
 
