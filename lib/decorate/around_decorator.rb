@@ -82,6 +82,7 @@ module Decorate
       klass.send(:define_method, method_name) do |*args, &block|
         call = Decorate::AroundCall.new(self, method_name.to_sym, wrapped_method_name.to_sym, args, block)
         decorator_block.call(call)
+        call.result
       end
     end
   end
