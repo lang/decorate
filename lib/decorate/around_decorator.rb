@@ -1,7 +1,7 @@
 require "decorate"
 require "decorate/create_alias"
 
-module Decorate::AroundDecorator
+module Decorate
 
   # An AroundCall holds the auxiliary information that is passed as
   # argument to an around method.
@@ -51,15 +51,13 @@ module Decorate::AroundDecorator
   #   require "decorate/around_decorator"
   #
   #   class Ad
-  #     extend Decorate::AroundDecorator
-  #   
-  #     around_decorator :wrap, :call => :wrap
-  #   
-  #     def wrap(call)
-  #       puts "Before #{call.inspect}"
-  #       call.transfer
-  #       puts "After #{call.inspect}"
-  #       call.result + 1
+  #     def self.wrap
+  #       Decorate.around_decorator do |call|
+  #         puts "Before #{call.inspect}"
+  #         call.transfer
+  #         puts "After #{call.inspect}"
+  #         call.result + 1
+  #       end
   #     end
   #   
   #     wrap
@@ -77,31 +75,15 @@ module Decorate::AroundDecorator
   #   foo: [], block: nil
   #   After #<Decorate::AroundDecorator::AroundCall:0xb7bd0828 @message=:foo, @result=5, @receiver=#<Ad:0xb7bd1e80>, @args=[], @block=nil, @wrapped_message=:foo_without_wrap>
   #   => 6
-  def around_decorator(decorator_name, opts) #:doc:
-    around_method_name = opts[:call]
-    unless around_method_name.kind_of?(Symbol)
-      raise "Option :call with Symbol argument required"
+  def self.around_decorator(&decorator_block) #:doc:
+    Decorate.decorate do |klass, method_name|
+      decorator_name = :around_decorator
+      wrapped_method_name = Decorate.create_alias(klass, method_name, decorator_name)
+      klass.send(:define_method, method_name) do |*args, &block|
+        call = Decorate::AroundCall.new(self, method_name.to_sym, wrapped_method_name, args, block)
+        decorator_block.call(call)
+      end
     end
-    unkown_opt = opts.keys.find { |opt| ![:call].include?(opt) }
-    if unkown_opt
-      raise "Unknown option #{unknown_opt.inspect}"
-    end
-
-    self.class.send(:define_method, decorator_name) {
-      Decorate.decorate { |klass, method_name|
-        wrapped_method_name =
-          Decorate.create_alias(klass, method_name, decorator_name)
-        klass.class_eval <<-EOF, __FILE__, __LINE__
-          def #{method_name}(*args, &block)
-            call = Decorate::AroundDecorator::AroundCall.new(
-                     self, :#{method_name}, :#{wrapped_method_name},
-                     args, block)
-            __send__(:#{around_method_name}, call)
-          end
-        EOF
-      }
-    }
   end
-  private :around_decorator
 
 end
