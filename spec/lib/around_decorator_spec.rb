@@ -24,6 +24,7 @@ describe Decorate, "around decorator" do
       def decorated_method(*args,&block)
         args.each {|x| x.call("from method") }
         yield if block_given?
+        "String"
       end
     end.new
   end
@@ -46,15 +47,44 @@ describe Decorate, "around decorator" do
 
   describe "call object" do
 
-    it "should be passed to the decorator on call"
+    it "should be passed to the decorator on call" do
+      before_callback.should_receive(:call).with { |call| call.should be_a Decorate::AroundCall }
+      subject.decorated_method
+    end
 
-    it "should contain args for the original call"
+    it "should contain receiver for the original call" do
+      before_callback.should_receive(:call).with { |call| call.receiver.should == subject }
+      subject.decorated_method
+    end
 
-    it "should contain block for the original call"
+    it "should contain args for the original call" do
+      args = [:a, :b].map{|x| mock(x, :call => nil) }
+      before_callback.should_receive(:call).with { |call| call.args.should == args }
+      subject.decorated_method(*args)
+    end
 
-    it "should contain original name of the method"
+    it "should contain block for the original call" do
+      block = lambda {}
+      before_callback.should_receive(:call).with { |call| call.block.should == block }
+      subject.decorated_method(&block)
+    end
 
-    it "should contain alias name of the original method"
+    it "should contain original name of the method" do
+      before_callback.should_receive(:call).with { |call| call.message.should == :decorated_method }
+      subject.decorated_method
+    end
+
+    it "should contain result of the call" do
+      after_callback.should_receive(:call).with { |call| call.result.should == "String" }
+      subject.decorated_method
+    end
+
+    it "should contain alias name of the original method" do
+      before_callback.should_receive(:call).with do |call|
+        call.wrapped_message.should == :decorated_method_without_around_decorator
+      end
+      subject.decorated_method
+    end
 
   end
 

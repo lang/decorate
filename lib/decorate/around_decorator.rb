@@ -80,7 +80,7 @@ module Decorate
       decorator_name = :around_decorator
       wrapped_method_name = Decorate.create_alias(klass, method_name, decorator_name)
       klass.send(:define_method, method_name) do |*args, &block|
-        call = Decorate::AroundCall.new(self, method_name.to_sym, wrapped_method_name, args, block)
+        call = Decorate::AroundCall.new(self, method_name.to_sym, wrapped_method_name.to_sym, args, block)
         decorator_block.call(call)
       end
     end
