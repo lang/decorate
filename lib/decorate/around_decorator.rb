@@ -54,7 +54,7 @@ module Decorate
   #         puts "Before #{call.inspect}"
   #         call.transfer
   #         puts "After #{call.inspect}"
-  #         call.result + 1
+  #         call.result += 1
   #       end
   #     end
   #   
