@@ -48,8 +48,6 @@ module Decorate
   
   # Example:
   #   
-  #   require "decorate/around_decorator"
-  #
   #   class Ad
   #     def self.wrap
   #       Decorate.around_decorator do |call|
