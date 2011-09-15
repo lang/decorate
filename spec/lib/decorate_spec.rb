@@ -1,18 +1,16 @@
 require 'spec_helper'
 
 describe Decorate do
-  let(:before_callback) { mock("BeforeCallback", :call => nil) }
-  let(:after_callback)  { mock("AfterCallback",  :call => nil) }
+  let(:callback) { mock("BeforeCallback", :call => nil) }
 
   let(:example_decorator) do
     Module.new do
-      def around_filter(before_callback, after_callback)
+      def decor(callback)
         Decorate.decorate do |klass, method_name|
-          wrapped_method_name = Decorate.create_alias(klass, method_name, :memoize)
+          wrapped_method_name = Decorate.create_alias(klass, method_name, :decor)
+          callback.call(klass, method_name)
           klass.send(:define_method, method_name) do |*args, &block|
-            before_callback.call
             send(wrapped_method_name, *args, &block)
-            after_callback.call
           end
         end
       end
@@ -20,47 +18,54 @@ describe Decorate do
   end
 
   let(:decorated_class) do
-    decorator, before_cb, after_cb = self.example_decorator, self.before_callback, self.after_callback
+    decorator, callback = self.example_decorator, self.callback
     Class.new do
+      class << self; def self.mock_id; "123" end end
+
       extend decorator
-      around_filter(before_cb, after_cb)
-      def self.decorated_method(*args,&block)
-        args.each {|x| x.call }
-        yield if block_given?
+      decor(callback)
+      def self.decorated_method(*args,&block); end
+
+      def self.tes
+        "test"
       end
     end
   end
 
   let(:decorated_object) do
-    decorator, before_cb, after_cb = self.example_decorator, self.before_callback, self.after_callback
+    decorator, callback = self.example_decorator, self.callback
     Class.new do
+      class << self; def mock_id; "123" end end
+
       extend decorator
-      around_filter(before_cb, after_cb)
-      def decorated_method(*args,&block)
-        args.each {|x| x.call }
-        yield if block_given?
-      end
+      decor(callback)
+      def decorated_method(*args,&block); end
     end.new
   end
 
   shared_examples_for "with decorated method" do
-    it "should wrap the orignal method" do
-      before_callback.should_receive(:call)
-      after_callback.should_receive(:call)
-      subject.decorated_method
+    it "should be triggered after method is defined" do
+      self.callback.should_receive(:call)
+      subject
     end
 
-    it "should provide args given to the method" do
-      callback_one, callback_two, callback_block = [mock]*3
-      callback_one.should_receive(:call)
-      callback_two.should_receive(:call)
-      callback_block.should_receive(:call)
-      subject.decorated_method(callback_one, callback_two) { callback_block.call }
+    it "should pass the method's class" do
+      self.callback.should_receive(:call).with do |klass, method_name|
+        klass.mock_id.should == "123"
+      end
+      subject
+    end
+
+    it "should pass the method's name" do
+      self.callback.should_receive(:call).with do |klass, method_name|
+        method_name == :decorated_method
+      end
+      subject
     end
   end
 
   context("instance method") do
-    subject{ decorated_object }
+    subject { decorated_object }
     it_should_behave_like "with decorated method"
   end
 
