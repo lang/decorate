@@ -24,7 +24,7 @@ module Decorate
     attr_reader :block
 
     # Holds the result of a transfer to the wrapped method.
-    attr_reader :result
+    attr_accessor :result
 
     def initialize(receiver, message, wrapped_message, args, block)
       @receiver = receiver

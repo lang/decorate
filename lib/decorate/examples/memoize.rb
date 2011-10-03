@@ -20,19 +20,13 @@ module Decorate::Memoize
   # Decorate::Memoize to leave off the module prefix. Note that this
   # decorator doesn't work for methods that take a block.
   def memoize
-    Decorate.decorate { |klass, method_name|
-      wrapped_method_name = Decorate.create_alias(klass, method_name, :memoize)
-      # TODO: should use weak hash tables
-      cache = Hash.new { |hash, key| hash[key] = {} }
-      klass.send(:define_method, method_name) { |*args|
-        icache = cache[self]
-        if icache.has_key?(args)
-          icache[args]
-        else
-          icache[args] = send(wrapped_method_name, *args)
-        end
-      }
-    }
+    Decorate.around_decorator do |call|
+      @_memoize ||= Hash.new {|h,k| h[k] = {} }
+      unless @_memoize[call.message].has_key?(call.args)
+        @_memoize[call.message][call.args] = call.transfer
+      end
+      call.result = @_memoize[call.message][call.args]
+    end
   end
   module_function :memoize
 
