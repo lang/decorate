@@ -9,7 +9,7 @@ describe Decorate, "around decorator" do
       def around_filter(before_callback,after_callback)
         Decorate.around_decorator do |call|
           before_callback.call(call)
-          call.transfer
+          call.yield
           after_callback.call(call)
         end
       end

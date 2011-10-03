@@ -22,8 +22,8 @@ module Decorate
     # Call the wrapped method. +args+ and +block+ default to original
     # ones passed by client code. The return value of the wrapped
     # method is stored in the +result+ attribute and also returned
-    # from transfer.
-    def transfer(args = @args, &block)
+    # from yield
+    def yield
       block ||= @block
       @result = @receiver.__send__(@wrapped_message, *args, &block)
     end
@@ -36,7 +36,7 @@ module Decorate
   #     def self.wrap
   #       Decorate.around_decorator do |call|
   #         puts "Before #{call.inspect}"
-  #         call.transfer
+  #         call.yield
   #         puts "After #{call.inspect}"
   #         call.result += 1
   #       end

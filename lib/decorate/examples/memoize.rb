@@ -23,7 +23,7 @@ module Decorate::Memoize
     Decorate.around_decorator do |call|
       @_memoize ||= Hash.new {|h,k| h[k] = {} }
       unless @_memoize[call.message].has_key?(call.args)
-        @_memoize[call.message][call.args] = call.transfer
+        @_memoize[call.message][call.args] = call.yield
       end
       call.result = @_memoize[call.message][call.args]
     end
