@@ -1,3 +1,3 @@
 require "decorate"
 require "decorate/create_alias"
-Dir["../../lib/decorate/examples/*.rb"].each {|f| require f }
+Dir[File.expand_path("../lib/decorate/examples/*.rb", File.dirname(__FILE__))].each {|f| require f }
