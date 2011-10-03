@@ -38,9 +38,9 @@ module Decorate
   # Example:
   #
   #   def trace_def
-  #     Decorate.decorate { |klass, method_name|
+  #     Decorate.decorate do |klass, method_name|
   #       puts "Method #{method_name.inspect} defined in #{klass.inspect}"
-  #     }
+  #     end
   #   end
   #
   #   class Foo
@@ -65,9 +65,9 @@ module Decorate
   # Decorate hooks into Module#method_added and
   # Object#singleton_method_added to call this method.
   def self.process_decorators(klass, method_name)
-    Decorate.clear_decorators.reverse!.each { |decorator|
+    Decorate.clear_decorators.reverse!.each do |decorator|
       decorator.decorate(klass, method_name)
-    }
+    end
   end
 
 end
@@ -79,7 +79,6 @@ class Module
   alias _method_added_without_decorate method_added
 
   def method_added(method_name)
-    #puts "method_added: #{self.inspect}[#{object_id}] #{method_name}"
     _method_added_without_decorate(method_name)
     Decorate.process_decorators(self, method_name)
   end
@@ -95,7 +94,6 @@ class Object
   def singleton_method_added(method_name)
     _singleton_method_added_without_decorate(method_name)
     klass = class << self; self; end
-    #puts "singleton_method_added: #{klass.inspect}[#{klass.object_id}] #{method_name}"
     Decorate.process_decorators(klass, method_name)
   end
 
