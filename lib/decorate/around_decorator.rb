@@ -7,23 +7,7 @@ module Decorate
   # argument to an around method.
   class AroundCall
 
-    # Receiving object.
-    attr_reader :receiver
-
-    # The message that was sent resulting in this around call.
-    attr_reader :message
-
-    # The name of the method that constitutes the "core" behaviour
-    # (behaviour without the around logic).
-    attr_reader :wrapped_message
-
-    # Original argument list.
-    attr_reader :args
-
-    # Original block.
-    attr_reader :block
-
-    # Holds the result of a transfer to the wrapped method.
+    attr_reader :receiver, :message, :wrapped_message, :args,:block
     attr_accessor :result
 
     def initialize(receiver, message, wrapped_message, args, block)
