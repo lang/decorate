@@ -17,8 +17,41 @@ describe Decorate do
     end
   end
 
+  let(:example_decorator_from_module) do
+    Module.new do
+      def decor(callback)
+        decor_module = Module.new do
+          @callback = callback
+          def self.decorate(klass, method_name)
+            wrapped_method_name = Decorate.create_alias(klass, method_name, :decor)
+            @callback.call(klass, method_name)
+            klass.send(:define_method, method_name) do |*args, &block|
+            send(wrapped_method_name, *args, &block)
+            end
+          end
+        end
+        Decorate.decorate(decor_module)
+      end
+    end
+  end
+
   let(:decorated_class) do
     decorator, callback = self.example_decorator, self.callback
+    Class.new do
+      class << self; def self.mock_id; "123" end end
+
+      extend decorator
+      decor(callback)
+      def self.decorated_method(*args,&block); end
+
+      def self.tes
+        "test"
+      end
+    end
+  end
+
+  let(:decorated_class_from_module) do
+    decorator, callback = self.example_decorator_from_module, self.callback
     Class.new do
       class << self; def self.mock_id; "123" end end
 
@@ -74,4 +107,17 @@ describe Decorate do
     it_should_behave_like "with decorated method"
   end
 
+  context("class method from module") do
+    subject{ decorated_class_from_module }
+    it_should_behave_like "with decorated method"
+  end
+
+  describe "defining decorator with module and block at once" do
+    subject do
+      decorator = Module.new do; def decorate(klass, method_name); end; end
+      Decorate.decorate(decorator) {|klass, method_name| }
+    end
+
+    specify { lambda { subject}.should raise_error(/won\'t accept block if decorator argument is given/) }
+  end
 end
