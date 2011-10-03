@@ -15,7 +15,7 @@ module Decorate
     i = 0
     new_name = basename
     loop {
-      break unless klass.method_defined?(new_name)
+      break unless klass.method_defined?(new_name) or klass.private_method_defined?(new_name) 
       i += 1
       new_name = "#{basename}_#{i}"
     }
