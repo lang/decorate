@@ -42,7 +42,8 @@ HelloWorld.say_hello # => "HELLO WORLD"
 ```
 
 * Around decorator
-  The same upper example with aound decorator:
+  
+The same upper example with aound rdecorator:
 
 ```ruby
 require 'decorate'
