@@ -1,4 +1,5 @@
 require "spec_helper"
+require File.expand_path("../../docsrc/examples/memoize", File.dirname(__FILE__))
 
 
 describe Decorate::Memoize do

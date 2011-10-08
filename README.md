@@ -58,7 +58,7 @@ module UpperCaser
 end
 ```
 
-* Memoize (example decorator, see lib/decorate/examles/memoize.rb)
+* Memoize (example decorator, see docsrc/examples/memoize.rb)
 
 ```ruby
 require 'decorate'
