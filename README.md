@@ -51,8 +51,7 @@ require 'decorate'
 module UpperCaser
   def upper
     Decorate.around_decorator do |call|
-      call.yield
-      call.result = call.result.to_s.upcase
+      call.yield.to_s.upcase
     end
   end
 end

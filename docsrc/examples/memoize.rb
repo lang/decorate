@@ -25,7 +25,7 @@ module Decorate::Memoize
       unless @_memoize[call.message].has_key?(call.args)
         @_memoize[call.message][call.args] = call.yield
       end
-      call.result = @_memoize[call.message][call.args]
+      @_memoize[call.message][call.args]
     end
   end
   module_function :memoize
