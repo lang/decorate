@@ -1,6 +1,3 @@
-require "decorate"
-require "decorate/create_alias"
-
 module Decorate
 
   # An AroundCall holds the auxiliary information that is passed as
