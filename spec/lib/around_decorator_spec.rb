@@ -45,10 +45,6 @@ describe Decorate, "around decorator" do
     subject.decorated_method(callback_one, callback_two) { callback_block.call }
   end
 
-  it "should preserve the return value of original method" do
-    subject.decorated_method.should == "String"
-  end
-
   describe "call object" do
     let(:args) { [:a, :b].map{|x| mock(x, :call => nil) } }
 
