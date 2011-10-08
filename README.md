@@ -73,6 +73,13 @@ class Fact
 end
 ```
 
+## Hygiene issues
+
+Decorate hooks into (aka redefines) Module#method_added and
+Object#singleton_method_added via the classic alias/delegate pattern.
+If you override these methods in one of your classes that use
+decorators, make sure to call +super+, otherwise decorate breaks.
+
 ## License
 
 Decorate is licensed under the same terms as the main Ruby
