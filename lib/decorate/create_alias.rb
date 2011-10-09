@@ -14,11 +14,10 @@ module Decorate
 
     i = 0
     new_name = basename
-    loop {
-      break unless klass.method_defined?(new_name)
+    while klass.method_defined?(new_name) or klass.private_method_defined?(new_name) 
       i += 1
       new_name = "#{basename}_#{i}"
-    }
+    end
 
     klass.send(:alias_method, new_name, method_name)
     klass.send(:private, new_name)
